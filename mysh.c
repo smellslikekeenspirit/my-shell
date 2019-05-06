@@ -20,6 +20,7 @@ static int cmd_num;
 static int verbose_status = 0;
 static int bang_num = 0;
 
+/***************************************QUEUE IMPLEMENTATION***************************************/
 
 // a node structure, used to define a queue unit
 typedef struct Node{
@@ -108,6 +109,8 @@ void destroy_queue(Queue *queue){
         free(queue);
         queue = NULL;
 }
+
+/**************************************************************************************************/
 
 
 /// parses shell commands sent by user
