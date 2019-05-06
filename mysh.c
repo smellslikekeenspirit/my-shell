@@ -344,6 +344,7 @@ int main(int argc, char *argv[]) {
     char *buf = malloc(len * sizeof(char));
     printf("mysh\n");
     while (1) {
+	printf("\033[0;32m")
         printf("mysh[%d]", cmd_num);
         fgets(buf, len, stdin);
         char *pos;
