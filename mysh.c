@@ -168,7 +168,7 @@ int verbose(int argc, char *argv[]) {
 int is_external(int *argc, char *argv[]){
     int status = 1;
     if (strcmp(argv[0], "quit") == 0){
-	quit(*argc, argv);
+	quit(0, argv);
 	    status = 0;
     }
     else if (strcmp(argv[0], "help") == 0){
@@ -239,11 +239,10 @@ int history(int argc, char *argv[]) {
 /// quits the process
 
 int quit(int argc, char *argv[]) {
-    (void) argc;
     (void) argv;
     printf("Quitting the program!\n");
     destroy_queue(history_queue);
-    exit(EXIT_SUCCESS);  
+    exit(argc);  
     return 0;
 }
 
@@ -273,7 +272,7 @@ int shell_command_handler(char *input, char **tokens, int *tokens_size){
             }
 	    if (execvp(tokens[0], tokens) < 0){
                 printf("Error: %s\n", strerror(errno));
-                quit(0, NULL);
+                quit(1, NULL);
             }
             
         }
@@ -284,8 +283,11 @@ int shell_command_handler(char *input, char **tokens, int *tokens_size){
 	    /*you made a exit call in child you need to wait on exit status of child*/
             if(WIFEXITED(status)){
 	        printf("child exited with status %d\n",WEXITSTATUS(status));
-                cmd_processed = 1;
-			 
+                if (WEXITSTATUS(status)){
+			cmd_processed = 0;
+		}else{
+			cmd_processed = 1;
+		}
 	    }
 	}
     }
@@ -352,8 +354,8 @@ int main(int argc, char *argv[]) {
             enqueue(history_queue, buf);
             cmd_num++;
         }
-        free(buf);
-        free(tokens);
+	if (buf) free(buf);
+        if (tokens) free(tokens);
         tokens_s = 0;
     }
 
